@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Imagem do Dia da NASA</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <h1>Imagem do Dia da NASA</h1>
+    <input type="date" id="dataInput" onkeyup="if (event.key === 'Enter') buscarImagem()">
+    <button onclick="buscarImagem()">Buscar</button>
+    <div id="imagemContainer"></div>
+
+    <script>
+        function buscarImagem() {
+            const data = document.getElementById("dataInput").value;
+            const apiKey = "RNQSp4BEgSdLk4hPZqfLZrBZjuRbSlqmkR03mN1E";
+            const apiUrl = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${data}`;
+            
+            const traduzir = (texto) => {
+                return axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt&dt=t&q=${texto}`)
+                    .then(response => response.data[0][0][0]);
+            };
+
+            const dataSelecionada = new Date(data);
+            const dataLimite = new Date("1995-06-20");
+            const dataAtual = new Date();
+
+            if (isNaN(dataSelecionada.getTime())) {
+                exibirMensagemErro("Data inválida. Insira uma data no formato correto.");
+                return;
+            } else if (dataSelecionada < dataLimite) {
+                exibirMensagemErro("Foto não encontrada. A data deve ser igual ou posterior a 20/06/1995.");
+                return;
+            } else if (dataSelecionada > dataAtual) {
+                exibirMensagemErro("Data no futuro. Insira uma data igual ou anterior à data atual.");
+                return;
+            }
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(async data => {
+                    const imagemContainer = document.getElementById("imagemContainer");
+
+                    if (data.media_type === "image") {
+                        const imagem = data.url;
+                        const tituloOriginal = data.title;
+                        const explicacaoOriginal = data.explanation;
+                        
+                        const tituloTraduzido = await traduzir(tituloOriginal);
+                        const explicacaoTraduzida = await traduzir(explicacaoOriginal);
+
+                        imagemContainer.innerHTML = `
+                            <h2>${tituloTraduzido}</h2>
+                            <img src="${imagem}" alt="${tituloTraduzido}">
+                            <p>${explicacaoTraduzida}</p>
+                        `;
+                    } else {
+                        imagemContainer.innerHTML = "<p>Nenhuma imagem disponível para a data selecionada.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao buscar imagem: " + error);
+                });
+        }
+
+        function exibirMensagemErro(mensagem) {
+            const imagemContainer = document.getElementById("imagemContainer");
+            imagemContainer.innerHTML = `<p class="erro">${mensagem}</p>`;
+        }
+    </script>
+</body>
+</html>

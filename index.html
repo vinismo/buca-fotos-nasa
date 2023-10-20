@@ -11,6 +11,7 @@
     <button onclick="buscarImagem()">Buscar</button>
     <div id="imagemContainer"></div>
 
+
     <script>
         function buscarImagem() {
             const data = document.getElementById("dataInput").value;
@@ -43,34 +44,34 @@
                     const imagemContainer = document.getElementById("imagemContainer");
 
                     if (data.media_type === "image") {
-    const imagem = data.url;
-    const tituloOriginal = data.title;
-    const explicacaoOriginal = data.explanation;
+                        const imagem = data.url;
+                        const tituloOriginal = data.title;
+                        const explicacaoOriginal = data.explanation;
 
-    const tituloTraduzido = await traduzir(tituloOriginal);
-    const explicacaoTraduzida = await traduzir(explicacaoOriginal);
+                        const tituloTraduzido = await traduzir(tituloOriginal);
+                        const explicacaoTraduzida = await traduzir(explicacaoOriginal);
 
-    imagemContainer.innerHTML = `
-        <h2>${tituloTraduzido}</h2>
-        <img src="${imagem}" alt="${tituloTraduzido}">
-        <p>${explicacaoTraduzida}</p>
-    `;
-} else if (data.media_type === "video") {
-    const video = data.url;
-    const tituloOriginal = data.title;
-    const explicacaoOriginal = data.explanation;
+                        imagemContainer.innerHTML = `
+                            <h2>${tituloTraduzido}</h2>
+                            <img src="${imagem}" alt="${tituloTraduzido}">
+                            <p>${explicacaoTraduzida}</p>
+                        `;
+                    } else if (data.media_type === "video") {
+                        const video = data.url;
+                        const tituloOriginal = data.title;
+                        const explicacaoOriginal = data.explanation;
 
-    const tituloTraduzido = await traduzir(tituloOriginal);
-    const explicacaoTraduzida = await traduzir(explicacaoOriginal);
+                        const tituloTraduzido = await traduzir(tituloOriginal);
+                        const explicacaoTraduzida = await traduzir(explicacaoOriginal);
 
-    imagemContainer.innerHTML = `
-        <h2>${tituloTraduzido}</h2>
-        <video src="${video}" controls></video>
-        <p>${explicacaoTraduzida}</p>
-    `;
-} else {
-    imagemContainer.innerHTML = "<p>Nenhuma imagem ou vídeo disponível para a data selecionada.</p>";
-}
+                        imagemContainer.innerHTML = `
+                            <h2>${tituloTraduzido}</h2>
+                            <video src="${video}" controls></video>
+                            <p>${explicacaoTraduzida}</p>
+                        `;
+                    } else {
+                        imagemContainer.innerHTML = "<p>Nenhuma imagem ou vídeo disponível para a data selecionada.</p>";
+                    }
 
 
                 })
